@@ -1,0 +1,14 @@
+{
+  "name": "dictionary",
+  "version": "1.0.0",
+  "description": "Create i18 files from csv",
+  "main": "app/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jdmaldonado",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
