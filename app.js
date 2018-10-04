@@ -1,15 +1,32 @@
-'use strict';
+'use strict'
 
-const express = require('express');
-const app = express();
+const path = require('path');
 
-const translateService = require('./services/translate.service');
+const fileService = require('./services/file.service');
 
-app.set('port', 8080);
 
-app.listen(app.get('port'), () => {
-  console.log('Express server listening on port... ' + app.get('port'));
+let dictionary;
+const dictionaryPath = path.resolve(__dirname, './files/input/dictionary.csv');
+const dictionaries = {
+  es: {},
+  en: {}
+};
 
-  translateService.createi18Files();
+fileService.getJsonFromCsv(dictionaryPath)
+  .then((dictionaryData) => {
 
-});
+    dictionary = dictionaryData;
+
+    dictionary.forEach((item) => {
+      dictionaries.es[item.Key] = item.ES;
+      dictionaries.en[item.Key] = item.EN;
+    });
+
+    return Promise.all([
+      fileService.createJsonFile(dictionaries.es, 'es.json'),
+      fileService.createJsonFile(dictionaries.en, 'en.json')
+    ]);
+  })
+  .then(() => fileService.createMoFiles(dictionary))
+  .then(() => console.log(`done!!!`))
+  .catch((err) => console.error(err))
